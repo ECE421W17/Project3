@@ -39,7 +39,7 @@ module ConcurrentSort
   end
 
   # TODO: Add a method to indicate whether the algorithm completed sorting?
-  # => If so, we'll need to use a class instead of a module; we'll need state.
+  # => If so, we might need to use a class instead of a module; we might need state.
   def finished?
   end
 end
