@@ -15,6 +15,18 @@ class TestObject
     return !less_than
   end
 
+  def <=>(other_object)
+    if self < other_object
+      return -1
+    end
+
+    if self > other_object
+      return 1
+    end
+
+    return 0
+  end
+
   def to_s
     @val.to_s
   end
@@ -26,8 +38,9 @@ o3 = TestObject.new(3)
 
 # objects = [4, 3, 2, 1]
 objects = [o2, o1, o3]
-res = ConcurrentSort.sort(5, *objects, lambda {
+res = ConcurrentSort.sort(5, objects, lambda {
   |object1, object2| return object1 < object2
   })
+# res = ConcurrentSort.sort(5, objects)
 
 puts res
