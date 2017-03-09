@@ -46,11 +46,17 @@ module ParallelMergeSort
                 col[p+1] = a[0]
             end
         else
-            first_half_mid_index = first_half.length/2;
-            j = find_correct_index(second_half, first_half[first_half_mid_index])
-            col_mid_index = i_start + first_half_mid_index + j
-            pmerge(first_half[0..first_half_mid_index], second_half[0..j], col, i_start, col_mid_index)
-            pmerge(first_half[(first_half_mid_index+1)..(first_half.length-1)], second_half[(j+1)..(second_half.length+1)], col, col_mid_index+1, i_end)
+            j = find_correct_index(second_half, first_half[first_half.length/2])
+
+            first_half1 = first_half[0..(first_half.length/2)]
+            second_half1 = second_half[0..j]
+
+            pmerge(first_half1, second_half1, col, i_start, first_half.length/2 + j - 1)
+
+            first_half2 = first_half[(first_half.length/2 + 1)..(first_half.length - 1)]
+            second_half2 = second_half[(j+1)..(second_half.length - 1)]
+
+            pmerge(first_half2, second_half2, col, first_half.length/2 + j, i_end)
         end
     end
 
