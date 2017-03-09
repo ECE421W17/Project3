@@ -1,7 +1,12 @@
+require 'pry'
+
 module ParallelMergeSort
+
+    # TODO: remove prints
 
     def self.find_correct_index(arr, value)
         # find j such that B[j] <= value <= B[j + 1] using binary search
+        return 0 if arr.empty?
 
         i = 0
         j = arr.length-1
@@ -26,43 +31,56 @@ module ParallelMergeSort
     end
             
 
-    def self.pmerge(first_half, second_half, col, i_start, i_end)
-        # merge the arrays first_half and second_half into col[i_start..i_end]
+    def self.pmerge(a, b, col, i_start, i_end)
+        # merge the arrays a and b into col[i_start..i_end]
 
         # dummy version - not parallel
 
+        puts "merging #{a} and #{b} into indices #{i_start}, #{i_end}"
+        puts "col: #{col}"
         output_size = i_end - i_start + 1
-        if (second_half.length > first_half.length)
-            # without loss of generality, larger array should be first
-            return pmerge(second_half, first_half, col, i_start, i_end)
-        elsif output_size == 1
-            col[p] = a[0]
-        elsif first_half.length == 1
-            if first_half[0] <= second_half[0]
-                col[p] = a[0]
-                col[p+1] = b[0]
+
+        # without loss of generality, larger array should be first
+        return pmerge(b, a, col, i_start, i_end) if b.length > a.length
+
+        if output_size == 1
+            col[i_start] = a[0]
+        elsif a.empty?
+            return
+        elsif a.length == 1
+            if a[0] <= b[0]
+                col[i_start] = a[0]
+                col[i_start+1] = b[0]
             else
-                col[p] = b[0]
-                col[p+1] = a[0]
+                col[i_start] = b[0]
+                col[i_start+1] = a[0]
             end
         else
-            j = find_correct_index(second_half, first_half[first_half.length/2])
+            pivot_index = a.length/2
+            pivot = a[pivot_index]
 
-            first_half1 = first_half[0..(first_half.length/2)]
-            second_half1 = second_half[0..j]
+            j = find_correct_index(b, pivot) # index that pivot should have in b
+            puts "index of value #{pivot} in #{b} is #{j}"
 
-            pmerge(first_half1, second_half1, col, i_start, first_half.length/2 + j - 1)
+            a_slice1 = a[0..(pivot_index-1)]
+            a_slice2 = a[(pivot_index + 1)..(-1)]
 
-            first_half2 = first_half[(first_half.length/2 + 1)..(first_half.length - 1)]
-            second_half2 = second_half[(j+1)..(second_half.length - 1)]
+            b_slice1 = b[0..j]
+            b_slice2 = b[(j+1)..(-1)]
 
-            pmerge(first_half2, second_half2, col, first_half.length/2 + j, i_end)
+            col_slice1_end = i_start + a_slice1.length + j
+            col_slice2_start = col_slice1_end + 2
+            col[col_slice1_end + 1] = pivot
+
+            pmerge(a_slice1, b_slice1, col, i_start, col_slice1_end)
+            pmerge(a_slice2, b_slice2, col, col_slice2_start, i_end)
         end
     end
 
     def self.merge(collection, p, q, r)
         first_half_copy = collection[p..q]
         second_half_copy = collection[q+1..r]
+        collection.fill(0) # TODO: remove = only for debugging
         pmerge(first_half_copy, second_half_copy, collection, p, r)
     end
 
