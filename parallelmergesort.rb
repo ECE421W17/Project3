@@ -5,29 +5,18 @@ module ParallelMergeSort
     # TODO: remove prints
 
     def self.find_correct_index(arr, value)
-        # find j such that B[j] <= value <= B[j + 1] using binary search
-        return 0 if arr.empty?
+        low = 0
+        high = arr.length - 1
+        while low < (high - 1)
+            mid = (low + high) / 2
 
-        i = 0
-        j = arr.length-1
-        while ((j-i) > 1)
-            mid = (i + j) / 2
-            if (arr[mid] <= value and value <= arr[mid+1])
-                return mid
-            end
-
-            if (value <= arr[mid])
-                j = mid
-            elsif (value >= arr[mid+1])
-                i = mid
+            if value <= arr[mid]
+                high = mid
+            elsif value > arr[mid]
+                low = mid
             end
         end
-
-        if (j == arr.length-1)
-            return j
-        else
-            return i
-        end
+        low
     end
             
 
