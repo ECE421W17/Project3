@@ -19,65 +19,53 @@ module ParallelMergeSort
         low
     end
             
-
-    def self.pmerge(a, b, col, i_start, i_end)
-        # merge the arrays a and b into col[i_start..i_end]
+    def self.pmerge(a, b, c, from, to)
+        # merge the arrays a and b into c[from..to]
 
         # dummy version - not parallel
 
-        puts "merging #{a} and #{b} into indices #{i_start}, #{i_end}"
-        puts "col: #{col}"
-        output_size = i_end - i_start + 1
+        output_size = from - to + 1
 
-        # without loss of generality, larger array should be first
-        return pmerge(b, a, col, i_start, i_end) if b.length > a.length
-
-        if output_size == 1
-            col[i_start] = a[0]
-        elsif a.empty?
-            return
+        puts "merging #{a} and #{b} into indices #{from}, #{to}"
+        puts "c: #{c}"
+        if b.length > a.length # without loss of generality, larger array should be first
+            self.pmerge(b, a, c, from, to)
+        elsif output_size == 1
+            c[from] = a[0]
         elsif a.length == 1
-            if a[0] <= b[0]
-                col[i_start] = a[0]
-                col[i_start+1] = b[0]
+            if a[0] < b[0]
+                c[from], c[from + 1] = a[0], b[0]
             else
-                col[i_start] = b[0]
-                col[i_start+1] = a[0]
+                c[from], c[from + 1] = b[0], a[0]
             end
         else
-            pivot_index = a.length/2
-            pivot = a[pivot_index]
+            mid_index = a.length/2 - 1
+            j = self.find_correct_index(b, a[mid_index])
+            puts "value of j for #{b} and #{a[mid_index]} is #{j}"
 
-            j = find_correct_index(b, pivot) # index that pivot should have in b
-            puts "index of value #{pivot} in #{b} is #{j}"
+            a_left = a[0..mid_index]
+            b_left = b[0..j]
+            self.pmerge(a_left, b_left, c, from, from + a_left.length + b_left.length - 1)
 
-            a_slice1 = a[0..(pivot_index-1)]
-            a_slice2 = a[(pivot_index + 1)..(-1)]
-
-            b_slice1 = b[0..j]
-            b_slice2 = b[(j+1)..(-1)]
-
-            col_slice1_end = i_start + a_slice1.length + j
-            col_slice2_start = col_slice1_end + 2
-            col[col_slice1_end + 1] = pivot
-
-            pmerge(a_slice1, b_slice1, col, i_start, col_slice1_end)
-            pmerge(a_slice2, b_slice2, col, col_slice2_start, i_end)
+            a_right = a[(mid_index+1)..-1]
+            b_right = b[(j+1)..-1]
+            self.pmerge(a_right, b_right, c, from + a_left.length + b_left.length, to)
         end
+
     end
 
     def self.merge(collection, p, q, r)
-        first_half_copy = collection[p..q]
-        second_half_copy = collection[q+1..r]
-        collection.fill(0) # TODO: remove = only for debugging
-        pmerge(first_half_copy, second_half_copy, collection, p, r)
+        first_half = collection[p..q]
+        second_half = collection[q+1..r]
+        collection.fill(0) # TODO: remove; debug only
+        self.pmerge(first_half, second_half, collection, p, r)
     end
 
     def self.mergesort(collection, p, r)
         if p < r
             q = (p + r) / 2
             t1 = Thread.new { mergesort(collection, p, q) }
-            t1 = Thread.new { mergesort(collection, q+1, r) }
+            t2 = Thread.new { mergesort(collection, q+1, r) }
             t1.join()
             t2.join()
             merge(collection, p, q, r)
