@@ -42,8 +42,8 @@ module ParallelMergeSort
     end
 
     def self.merge(collection, p, q, r)
-        left = collection[p..q]
-        right = collection[q+1..r]
+        left = (p..q).map { |i| collection[i] }
+        right = ((q+1)..r).map { |i| collection[i] }
         self.pmerge(left, right, collection, p, r)
     end
 
