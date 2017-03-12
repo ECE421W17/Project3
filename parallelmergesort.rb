@@ -36,6 +36,9 @@ module ParallelMergeSort
             t1 = Thread.new {self.pmerge(a_left, b_left, c, from, from + a_left.length + b_left.length - 1)}
             t2 = Thread.new {self.pmerge(a_right, b_right, c, from + a_left.length + b_left.length, to)}
 
+            t1.join
+            t2.join
+
             while t1.abort_on_exception do
                 t1 = Thread.new {self.pmerge(a_left, b_left, c, from, from + a_left.length + b_left.length - 1)}
                 puts "recover t1"
@@ -44,8 +47,6 @@ module ParallelMergeSort
               t2 = Thread.new {self.pmerge(a_right, b_right, c, from + a_left.length + b_left.length, to)}
               puts "recover t2"
             end
-            t1.join
-            t2.join
         end
     end
 
