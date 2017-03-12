@@ -1,5 +1,5 @@
 # TODO: Remove this file - just needed for testing
-require_relative 'concurrent_sort'
+#require_relative 'concurrent_sort'
 
 class TestObject
   def initialize(val)
@@ -32,15 +32,4 @@ class TestObject
   end
 end
 
-o1 = TestObject.new(1)
-o2 = TestObject.new(2)
-o3 = TestObject.new(3)
 
-# objects = [4, 3, 2, 1]
-objects = [o2, o1, o3]
-res = ConcurrentSort.sort(5, objects, lambda {
-  |object1, object2| return object1 < object2
-  })
-# res = ConcurrentSort.sort(5, objects)
-
-puts res

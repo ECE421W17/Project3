@@ -1,4 +1,6 @@
 require 'test/unit/assertions'
+require_relative 'parallelmergesort'
+require 'timeout'
 
 include Test::Unit::Assertions
 
@@ -18,35 +20,22 @@ module ConcurrentSort
 
   def self._verify_sort_post_conditions(objects, originalLength)
     assert(objects.length == originalLength, "the length of the element list is changed")
-
   end
 
   def self.sort(duration, objects, comparison_function = nil)
     _verify_sort_pre_conditions(duration, objects, comparison_function)
-
     originalLength = objects.length
 
-    # TODO: Implement properly; using bubble sort to test
-    for i in 0..objects.length - 1
-      acme = objects[i]
-      for j in i..objects.length - 1
-        if comparison_function != nil
-          if comparison_function.call(objects[j], acme)
-            objects[i] = objects[j]
-            objects[j] = acme
-            acme = objects[i]
-          end
-        else
-          if objects[j] < acme
-            objects[i] = objects[j]
-            objects[j] = acme
-            acme = objects[i]
-          end
-        end
-      end
+    #replace bubble sort with merge sort
+    begin
+      status = Timeout::timeout(duration){
+        ParallelMergeSort.mergesort(objects, 0, objects.length-1)
+      }
+      _verify_sort_post_conditions(objects, originalLength)
+      return objects
+    rescue Timeout::Error
+      puts "Timeout error, no sorting has been done"
+      return objects
     end
-
-    _verify_sort_post_conditions(objects, originalLength)
-    return objects
   end
 end
