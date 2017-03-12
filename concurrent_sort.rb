@@ -24,6 +24,9 @@ module ConcurrentSort
 
   def self.sort(duration, objects, comparison_function = nil)
     _verify_sort_pre_conditions(duration, objects, comparison_function)
+
+    #TODO: decide what to do for backward recovery, for now, make a copy of the orginal list 
+    backupList = objects.dup
     originalLength = objects.length
 
     #replace bubble sort with merge sort
@@ -35,7 +38,8 @@ module ConcurrentSort
       return objects
     rescue Timeout::Error
       puts "Timeout error, no sorting has been done"
-      return objects
+      _verify_sort_post_conditions(backupList, originalLength)
+      return backupList
     end
   end
 end
