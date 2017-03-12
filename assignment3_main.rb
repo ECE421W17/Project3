@@ -7,7 +7,7 @@ objects = [-3, 342, 3434, 343, -1222,345932,49495, 340201, 3030021, 11, 0, -1343
 res = ConcurrentSort.sort(1, objects, nil)
 puts res
 
-puts "Test with integer arrays, expect: timeout error, no sorting have been done"
+puts "Test with integer arrays, expect: timeout error, no sorting have been done, return original list"
 objects = [-3, 342, 3434, 343, -1222,345932,49495, 340201, 3030021, 11, 0, -1343, -123455]
 res = ConcurrentSort.sort(0.001, objects, nil)
 puts res
