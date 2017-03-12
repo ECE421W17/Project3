@@ -57,5 +57,4 @@ module ParallelMergeSort
             self.merge(collection, p, q, r)
         end
     end
-
 end
