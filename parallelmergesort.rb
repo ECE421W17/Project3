@@ -3,8 +3,8 @@ module ParallelMergeSort
 
     def self.find_correct_index(arr, value)
         # find j such that arr[j] <= value <= arr[j+1]
-        i = arr.bsearch_index {|x| value <= x}
-        i ? i - 1 : arr.length - 1
+        idx = (0..arr.size-1).bsearch { |i| value <= arr[i] }
+        idx ? idx - 1 : arr.length - 1
     end
             
     def self.pmerge(a, b, c, from, to)
