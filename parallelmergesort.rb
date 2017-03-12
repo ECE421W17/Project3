@@ -3,8 +3,8 @@ module ParallelMergeSort
 
     def self.find_correct_index(arr, value)
         # find j such that arr[j] <= value <= arr[j+1]
-        i = arr.bsearch_index {|x| value <= x}
-        i ? i - 1 : arr.length - 1
+        idx = (0..arr.size-1).bsearch { |i| value <= arr[i] }
+        idx ? idx - 1 : arr.length - 1
     end
             
     def self.pmerge(a, b, c, from, to)
@@ -36,6 +36,9 @@ module ParallelMergeSort
             t1 = Thread.new {self.pmerge(a_left, b_left, c, from, from + a_left.length + b_left.length - 1)}
             t2 = Thread.new {self.pmerge(a_right, b_right, c, from + a_left.length + b_left.length, to)}
 
+            t1.join
+            t2.join
+
             while t1.abort_on_exception do
                 t1 = Thread.new {self.pmerge(a_left, b_left, c, from, from + a_left.length + b_left.length - 1)}
                 puts "recover t1"
@@ -44,14 +47,12 @@ module ParallelMergeSort
               t2 = Thread.new {self.pmerge(a_right, b_right, c, from + a_left.length + b_left.length, to)}
               puts "recover t2"
             end
-            t1.join
-            t2.join
         end
     end
 
     def self.merge(collection, p, q, r)
-        left = collection[p..q]
-        right = collection[q+1..r]
+        left = (p..q).map { |i| collection[i] }
+        right = ((q+1)..r).map { |i| collection[i] }
         self.pmerge(left, right, collection, p, r)
     end
 
