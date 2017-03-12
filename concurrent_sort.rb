@@ -8,6 +8,7 @@ module ConcurrentSort
   def self._verify_sort_pre_conditions(duration, objects, comparison_function)
     assert(duration.respond_to?(:to_i), "The given duration is not an integer")
     assert(duration.to_i >= 0, "The given duration is a negative value")
+    assert(duration != 0, "The given duration is zero (same as infinite), which isn't allowed")
     assert(objects.respond_to?(:[]), "Contents cannot overload [] operator")
     assert(objects.respond_to?(:length),
       "The collection must implement a 'length' method")
@@ -19,7 +20,7 @@ module ConcurrentSort
   end
 
   def self._verify_sort_post_conditions(objects, originalLength)
-    assert(objects.length == originalLength, "the length of the element list is changed")
+    assert(objects.length == originalLength, "The length of the element list has changed")
   end
 
   def self.sort(duration, objects, comparison_function = nil)
