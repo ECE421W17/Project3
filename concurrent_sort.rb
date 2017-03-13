@@ -13,27 +13,26 @@ module ConcurrentSort
     assert(objects.respond_to?(:length),
       "The collection must implement a 'length' method")
     assert(objects.length > 0, "Do not accept null lists")
-    if comparison_function != nil
-      assert(comparison_function.arity == 2,
-        "The given comparison function must accept exactly two arguments")
-    end
+    assert(comparison_function.arity == 2,
+      "The given comparison function must accept exactly two arguments")
   end
 
   def self._verify_sort_post_conditions(objects, originalLength)
     assert(objects.length == originalLength, "The length of the element list has changed")
   end
 
-  def self.sort(duration, objects, comparison_function = nil)
+  def self.sort(duration, objects, comparison_function = lambda {|x, y| x <= y})
+    # comparison_function ||= 
     _verify_sort_pre_conditions(duration, objects, comparison_function)
 
-    #TODO: decide what to do for backward recovery, for now, make a copy of the orginal list 
+    #TODO: decide what to do for backward recovery, for now, make a copy of the orginal list
     backupList = objects.dup
     originalLength = objects.length
 
     #replace bubble sort with merge sort
     begin
       status = Timeout::timeout(duration){
-        ParallelMergeSort.mergesort(objects, 0, objects.length-1)
+        ParallelMergeSort.mergesort(objects, 0, objects.length-1, comparison_function)
       }
       _verify_sort_post_conditions(objects, originalLength)
       return objects
