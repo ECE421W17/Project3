@@ -20,6 +20,22 @@ rescue Timeout::Error
 end
 puts objects
 
+objects = Array.new(1000) {rand(100000)  }
+begin
+	ConcurrentSort.sort(10, objects)
+	File.open('test1.txt', 'w'){|file| file.write(objects)}
+rescue Timeout::Error
+	puts "Timeout error. No sorting done, return original list"
+end
+
+objects = Array.new(10000) {rand(10000000)  }
+begin
+	ConcurrentSort.sort(10, objects)
+	File.open('test2.txt', 'w'){|file| file.write(objects)}
+rescue Timeout::Error
+	puts "Timeout error. No sorting done, return original list"
+end
+
 o1 = TestObject.new(1)
 o2 = TestObject.new(2)
 o3 = TestObject.new(3)
