@@ -1,3 +1,14 @@
+# This file contains test code for our module.
+# To use the module in your code base, include concurrent_sort
+# and call ConcurrentSort.sort(duration, objects, comparison_function)
+#
+# Group members:
+#
+# Andrew Lawrence - adlawren
+# Derek Shultz    - dshultz
+# Rui Wu          - rwu4
+# Vitor Mendonca  - mendona
+
 require_relative 'parallelmergesort'
 require_relative 'concurrent_sort'
 require_relative 'test_file'
