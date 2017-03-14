@@ -20,6 +20,7 @@ rescue Timeout::Error
 end
 puts objects
 
+puts "Sorting 1000 random integers into file test1.txt"
 objects = Array.new(1000) {rand(100000)  }
 begin
 	ConcurrentSort.sort(10, objects)
@@ -28,6 +29,7 @@ rescue Timeout::Error
 	puts "Timeout error. No sorting done, return original list"
 end
 
+puts "Sorting 2000 random integers into file test2.txt"
 objects = Array.new(2000) {rand(10000000)  }
 begin
 	ConcurrentSort.sort(10, objects)
@@ -36,6 +38,7 @@ rescue Timeout::Error
 	puts "Timeout error. No sorting done, return original list"
 end
 
+puts "Sorting custom TestObject class"
 o1 = TestObject.new(1)
 o2 = TestObject.new(2)
 o3 = TestObject.new(3)
@@ -43,9 +46,29 @@ o3 = TestObject.new(3)
 #objects = [4, 3, 2, 1]
 objects = [o2, o1, o3]
 begin
-	ConcurrentSort.sort(5, objects, lambda {
-  |object1, object2| return object1 < object2
+  ConcurrentSort.sort(5, objects, lambda {
+  |object1, object2| return object1 > object2
   })
+rescue Timeout::Error
+	puts "no sorting done, return original list"
+end
+puts objects
+
+puts "Sorting strings by default (<=)"
+objects = ["zxx", "yxxxxx", "x"]
+begin
+  ConcurrentSort.sort(5, objects)
+rescue Timeout::Error
+	puts "no sorting done, return original list"
+end
+puts objects
+
+puts "Sorting strings by length"
+objects = ["zxx", "yxxxxx", "x"]
+begin
+  ConcurrentSort.sort(5, objects, lambda {
+    |object1, object2| object1.length < object2.length
+    })
 rescue Timeout::Error
 	puts "no sorting done, return original list"
 end
