@@ -70,8 +70,11 @@ module ParallelMergeSort
     end
 
     def self.rescue(collection, backup)
+        Thread.list.each do |thread|
+            thread.exit unless thread == Thread.current
+        end
         len = backup.length
-        (0..len).each do |i|
+        (0..len-1).each do |i|
           collection[i] = backup[i]
         end
     end

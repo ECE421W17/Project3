@@ -24,12 +24,15 @@ module ConcurrentSort
   def self.sort(duration, objects, comparison_function = lambda {|x, y| x <= y})
     _verify_sort_pre_conditions(duration, objects, comparison_function)
 
-    backupList = objects.dup
     originalLength = objects.length
+    backupList = Array.new(originalLength)
+    (0..originalLength-1).each do |i|
+      backupList[i] = objects[i]
+    end
     begin
-      status = Timeout::timeout(duration){
+      Timeout::timeout(duration) do
         ParallelMergeSort.mergesort(objects, 0, objects.length-1, comparison_function)
-      }
+      end
       _verify_sort_post_conditions(objects, originalLength)
     rescue Timeout::Error
       ParallelMergeSort.rescue(objects, backupList)

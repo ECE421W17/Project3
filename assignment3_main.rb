@@ -19,14 +19,18 @@ rescue Timeout::Error
 	puts "Timeout error. No sorting done, return original list"
 end
 puts objects
-# o1 = TestObject.new(1)
-# o2 = TestObject.new(2)
-# o3 = TestObject.new(3)
 
-# objects = [4, 3, 2, 1]
-# objects = [o2, o1, o3]
-# res = ConcurrentSort.sort(5, objects, lambda {
-#   |object1, object2| return object1 < object2
-#   })
+o1 = TestObject.new(1)
+o2 = TestObject.new(2)
+o3 = TestObject.new(3)
 
-# puts res
+#objects = [4, 3, 2, 1]
+objects = [o2, o1, o3]
+begin
+	ConcurrentSort.sort(5, objects, lambda {
+  |object1, object2| return object1 < object2
+  })
+rescue Timeout::Error
+	puts "no sorting done, return original list"
+end
+puts objects
