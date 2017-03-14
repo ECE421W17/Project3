@@ -14,7 +14,7 @@ puts objects
 puts "Test with integer arrays, expect: timeout error, no sorting have been done, return original list"
 objects = [-3, 342, 3434, 343, -1222, 345932, 49495, 340201, 3030021, 11, 0, -1343, -123455]
 begin
-	ConcurrentSort.sort(0.001, objects)
+	ConcurrentSort.sort(0.00001, objects)
 rescue Timeout::Error
 	puts "Timeout error. No sorting done, return original list"
 end
@@ -28,7 +28,7 @@ rescue Timeout::Error
 	puts "Timeout error. No sorting done, return original list"
 end
 
-objects = Array.new(10000) {rand(10000000)  }
+objects = Array.new(2000) {rand(10000000)  }
 begin
 	ConcurrentSort.sort(10, objects)
 	File.open('test2.txt', 'w'){|file| file.write(objects)}
