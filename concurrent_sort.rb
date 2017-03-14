@@ -12,7 +12,8 @@ module ConcurrentSort
     assert(objects.respond_to?(:[]), "Contents cannot overload [] operator")
     assert(objects.respond_to?(:length),
       "The collection must implement a 'length' method")
-    assert(objects.length > 0, "Do not accept null lists")
+    assert(objects, "Do not accept null collections")
+    assert(objects.empty?, "Do not accept empty collections")
     assert(comparison_function.arity == 2,
       "The given comparison function must accept exactly two arguments")
   end
