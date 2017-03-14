@@ -22,24 +22,18 @@ module ConcurrentSort
   end
 
   def self.sort(duration, objects, comparison_function = lambda {|x, y| x <= y})
-    # comparison_function ||= 
     _verify_sort_pre_conditions(duration, objects, comparison_function)
 
-    #TODO: decide what to do for backward recovery, for now, make a copy of the orginal list
     backupList = objects.dup
     originalLength = objects.length
-
-    #replace bubble sort with merge sort
     begin
       status = Timeout::timeout(duration){
         ParallelMergeSort.mergesort(objects, 0, objects.length-1, comparison_function)
       }
       _verify_sort_post_conditions(objects, originalLength)
-      return objects
     rescue Timeout::Error
-      puts "Timeout error, no sorting has been done"
-      _verify_sort_post_conditions(backupList, originalLength)
-      return backupList
+      ParallelMergeSort.rescue(objects, backupList)
+      raise Timeout::Error
     end
   end
 end

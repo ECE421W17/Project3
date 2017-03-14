@@ -68,4 +68,11 @@ module ParallelMergeSort
             self.merge(collection, p, q, r, comparison_function)
         end
     end
+
+    def self.rescue(collection, backup)
+        len = backup.length
+        (0..len).each do |i|
+          collection[i] = backup[i]
+        end
+    end
 end
