@@ -12,7 +12,7 @@ module ConcurrentSort
     assert(objects.respond_to?(:length),
       "The collection must implement a 'length' method")
     assert(objects, "Do not accept null collections")
-    assert(objects.empty?, "Do not accept empty collections")
+    assert(!objects.empty?, "Do not accept empty collections")
     assert(comparison_function.arity == 2,
       "The given comparison function must accept exactly two arguments")
   end
